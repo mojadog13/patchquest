@@ -1,0 +1,759 @@
+/* ============ Patch Quest — 実機風ラックUI 基礎スタイル ============ */
+
+:root {
+  /* 背景・共通 */
+  --bg: #17181b;
+  --panel-face-hi: #2f3237;
+  --panel-face-lo: #212327;
+  --panel-edge: #0c0d0f;
+  --text: #d6d8dc;
+  --text-dim: #8a8e95;
+
+  /* モジュール署名色 */
+  --c-osc: #e5484d;    /* オシレータ=赤系 */
+  --c-filter: #4f9cf9; /* フィルタ=青系 */
+  --c-env: #3fbf6e;    /* エンベロープ=緑系 */
+  --c-lfo: #a06bf5;    /* LFO=紫系 */
+
+  /* 既定の署名色(パネル外の再生ボタン等はオシレータ色) */
+  --sig: var(--c-osc);
+  --sig-glow: color-mix(in srgb, var(--sig) 55%, transparent);
+  --sig-dim: color-mix(in srgb, var(--sig) 18%, transparent);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #202226 0%, var(--bg) 55%, #101114 100%);
+  color: var(--text);
+  font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 104px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============ 上部固定ヘッダー ============ */
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, #2a2c31, #1d1f22);
+  border-bottom: 1px solid #08090a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.top-inner {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 16px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #f2f3f5;
+}
+
+.app-title span {
+  color: var(--c-osc);
+  text-shadow: 0 0 10px var(--sig-glow);
+}
+
+/* レベルメーター */
+.meter {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+  padding: 5px 7px;
+  background: linear-gradient(180deg, #08090a, #101113);
+  border-radius: 4px;
+  border: 1px solid #000;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.meter .seg {
+  width: 5px;
+  height: 14px;
+  border-radius: 1px;
+  background: #1e2023;
+  transition: background 0.05s linear;
+}
+
+.meter .seg.on {
+  background: #3fbf6e;
+  box-shadow: 0 0 5px rgba(63, 191, 110, 0.6);
+}
+
+.meter .seg.hot.on {
+  background: #e5484d;
+  box-shadow: 0 0 5px rgba(229, 72, 77, 0.7);
+}
+
+/* マスターボリューム(ミニノブ) */
+.master-vol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --sig: #cfd2d6;
+  --sig-glow: rgba(255, 255, 255, 0.25);
+}
+
+.vol-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  margin-top: -3px;
+}
+
+/* ============ クエストバー(お題) ============ */
+
+.quest-bar {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px 8px;
+}
+
+.quest-no {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--c-osc);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid color-mix(in srgb, var(--c-osc) 25%, transparent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.quest-title {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quest-title.done {
+  color: #3fbf6e;
+}
+
+.monitor-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.monitor-toggle button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #0b0c0e;
+  background: linear-gradient(180deg, #34373c, #24262a 55%, #1d1f22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+  --sig: var(--c-osc);
+  --sig-glow: color-mix(in srgb, var(--sig) 55%, transparent);
+}
+
+.monitor-toggle button.active {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--c-osc) 40%, transparent);
+}
+
+/* ============ パネル ============ */
+
+.panel {
+  /* --sigは.panel-<id>で決まる。glow/dimはこの要素上で再解決させる
+     (:root定義のままだと:rootの--sig=赤で固定されてしまう) */
+  --sig-glow: color-mix(in srgb, var(--sig) 55%, transparent);
+  --sig-dim: color-mix(in srgb, var(--sig) 18%, transparent);
+  position: relative;
+  border-radius: 10px;
+  padding: 14px 16px 18px;
+  background:
+    linear-gradient(180deg, var(--panel-face-hi) 0%, var(--panel-face-lo) 45%, #1c1e21 100%);
+  border: 1px solid var(--panel-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 10px 28px rgba(0, 0, 0, 0.65),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.25s ease, filter 0.4s ease;
+}
+
+/* モジュール署名色の割り当て */
+.panel-osc    { --sig: var(--c-osc); }
+.panel-filter { --sig: var(--c-filter); }
+.panel-env    { --sig: var(--c-env); }
+.panel-lfo    { --sig: var(--c-lfo); }
+
+/* 操作中(発音中)のハイライト: 縁の発光 */
+.panel.active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 10px 28px rgba(0, 0, 0, 0.65),
+    0 0 0 1px var(--sig),
+    0 0 22px var(--sig-glow);
+}
+
+/* 未解放: 彩度を落として鎮座。触れない */
+.panel.locked {
+  filter: saturate(0.1) brightness(0.72) contrast(0.95);
+  pointer-events: none;
+}
+
+.panel.locked .power-led {
+  background: radial-gradient(circle at 35% 30%, #43464b, #26282b 60%, #141518);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.panel.locked .panel-badge {
+  color: var(--text-dim);
+  border-color: rgba(255, 255, 255, 0.12);
+  text-shadow: none;
+}
+
+.panel.locked .lcd {
+  color: #5c5f65;
+  text-shadow: none;
+}
+
+/* 四隅のネジ */
+.screw {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background:
+    linear-gradient(135deg, transparent 44%, rgba(0,0,0,0.85) 46%, rgba(0,0,0,0.85) 54%, transparent 56%),
+    radial-gradient(circle at 34% 30%, #55585e, #26282b 65%, #0f1012);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.8);
+}
+.screw.tl { top: 7px; left: 7px; }
+.screw.tr { top: 7px; right: 7px; transform: rotate(40deg); }
+.screw.bl { bottom: 7px; left: 7px; transform: rotate(-25deg); }
+.screw.br { bottom: 7px; right: 7px; transform: rotate(70deg); }
+
+/* ============ パネル間の信号フロー ============ */
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 0;
+  color: var(--text-dim);
+}
+
+.flow-line {
+  width: 2px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.flow-arrow.mod .flow-line {
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0 2px,
+    transparent 2px 5px
+  );
+}
+
+.flow-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin: 1px 0;
+}
+
+.flow-head {
+  font-size: 8px;
+  line-height: 1;
+  margin-top: -1px;
+}
+
+/* ============ パネルヘッダー ============ */
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 6px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin-bottom: 14px;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #f2f3f5;
+}
+
+.panel-sub {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.panel-badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--sig);
+  border: 1px solid var(--sig-dim);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-shadow: 0 0 8px var(--sig-glow);
+  white-space: nowrap;
+}
+
+.power-led {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--sig) 45%, #fff), var(--sig) 55%, color-mix(in srgb, var(--sig) 55%, #000));
+  box-shadow:
+    0 0 8px var(--sig-glow),
+    0 0 2px var(--sig),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+/* ============ セクション枠 ============ */
+
+.panel-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.section {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  padding: 10px 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.section.wide {
+  grid-column: 1 / -1;
+}
+
+.section legend {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  padding: 0 6px;
+}
+
+.jp {
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+
+/* ADSR等の横並びノブ列 */
+.knob-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.knob-row .lcd {
+  min-width: 0;
+  font-size: 10px;
+  padding: 3px 5px;
+}
+
+/* ============ 波形セレクタ ============ */
+
+.wave-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+}
+
+.wave-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  border: 1px solid #0b0c0e;
+  background: linear-gradient(180deg, #34373c, #24262a 55%, #1d1f22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.55);
+  color: var(--text-dim);
+  cursor: pointer;
+  font: inherit;
+  transition: color 0.15s ease;
+}
+
+.wave-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.wave-btn.active {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--sig) 40%, transparent);
+}
+
+.wave-icon {
+  width: 22px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.wave-btn.active .wave-icon {
+  stroke: var(--sig);
+  filter: drop-shadow(0 0 4px var(--sig-glow));
+}
+
+.wave-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #3a3d42, #232529 60%, #121316);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.led.on {
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--sig) 40%, #fff), var(--sig) 55%, color-mix(in srgb, var(--sig) 60%, #000));
+  box-shadow: 0 0 7px var(--sig-glow), inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* ============ ノブ ============ */
+
+.knob-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.knob-svg {
+  touch-action: none;
+  cursor: ns-resize;
+  display: block;
+}
+
+.tick {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+}
+
+.tick.major {
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1.6;
+}
+
+.knob-pointer {
+  stroke: var(--sig);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px var(--sig-glow));
+}
+
+/* 値表示: LCD風 */
+.lcd {
+  min-width: 74px;
+  text-align: center;
+  font-family: "Consolas", "SF Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--sig);
+  text-shadow: 0 0 6px var(--sig-glow);
+  background: linear-gradient(180deg, #08090a, #101113);
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 4px 8px;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.param-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+}
+
+/* ============ トランスポート(再生+提出) ============ */
+
+.transport {
+  position: sticky;
+  bottom: 14px;
+  z-index: 5;
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.play-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #0b0c0e;
+  background: linear-gradient(180deg, #34373c, #232529 55%, #1b1d20);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 16px rgba(0, 0, 0, 0.55);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.play-btn.playing {
+  border-color: color-mix(in srgb, var(--sig) 50%, transparent);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.6),
+    0 0 18px var(--sig-glow);
+  transform: translateY(1px);
+}
+
+.play-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  color: var(--sig);
+  text-shadow: 0 0 8px var(--sig-glow);
+  background: radial-gradient(circle at 36% 30%, #45484e, #232529 60%, #131417);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+    0 3px 6px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.play-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.play-text small {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+/* お題再生時は金色系のアクセントで「正解の音」を区別 */
+.play-btn.target {
+  --sig: #e0a63f;
+  --sig-glow: color-mix(in srgb, #e0a63f 55%, transparent);
+}
+
+.submit-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 96px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #0b0c0e;
+  background: linear-gradient(180deg, #34373c, #232529 55%, #1b1d20);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 16px rgba(0, 0, 0, 0.55);
+  color: var(--c-env);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--c-env) 55%, transparent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.submit-btn small {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  text-shadow: none;
+}
+
+/* ============ モーダル(判定結果・解説カード) ============ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 9, 10, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.modal-card {
+  --sig: var(--c-osc);
+  --sig-glow: color-mix(in srgb, var(--sig) 55%, transparent);
+  width: 100%;
+  max-width: 320px;
+  border-radius: 12px;
+  padding: 22px 20px 20px;
+  background: linear-gradient(180deg, var(--panel-face-hi), var(--panel-face-lo) 50%, #1c1e21);
+  border: 1px solid var(--panel-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 1px color-mix(in srgb, var(--sig) 35%, transparent),
+    0 0 32px var(--sig-glow),
+    0 18px 44px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.modal-card.pass { --sig: var(--c-env); }
+.modal-card.fail { --sig: #e0a63f; }
+.modal-card.sig-osc { --sig: var(--c-osc); }
+.modal-card.sig-filter { --sig: var(--c-filter); }
+.modal-card.sig-env { --sig: var(--c-env); }
+.modal-card.sig-lfo { --sig: var(--c-lfo); }
+
+.modal-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--sig);
+  text-shadow: 0 0 8px var(--sig-glow);
+  border: 1px solid color-mix(in srgb, var(--sig) 30%, transparent);
+  border-radius: 3px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-card h3 {
+  margin: 14px 0 6px;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  color: #f2f3f5;
+}
+
+.modal-card p {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--text);
+  text-align: left;
+}
+
+.modal-card.pass p { text-align: center; }
+
+.feedback-list {
+  margin: 14px 0 0;
+  padding: 0 0 0 2px;
+  list-style: none;
+  text-align: left;
+}
+
+.feedback-list li {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text);
+  padding: 6px 0 6px 18px;
+  position: relative;
+}
+
+.feedback-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 2px;
+  color: var(--sig);
+}
+
+.modal-btn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--sig) 45%, #000);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sig) 30%, #26282c), color-mix(in srgb, var(--sig) 14%, #1b1d20));
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.modal-btn:active {
+  transform: translateY(1px);
+}
